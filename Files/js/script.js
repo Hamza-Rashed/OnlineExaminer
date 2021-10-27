@@ -10,6 +10,14 @@ const time_line = document.querySelector("header .time_line");
 const timeText = document.querySelector(".timer .time_left_txt");
 const timeCount = document.querySelector(".timer .timer_sec");
 
+let indexRandomQuestion = []
+for(let i=0 ; i<1000 ; i++){
+    let number = Math.floor(Math.random() * (91 - 1) + 1)
+    if(!indexRandomQuestion.includes(number)){
+        indexRandomQuestion.push(number)
+    }
+}
+
 // if startQuiz button clicked
 start_btn.onclick = ()=>{
     info_box.classList.add("activeInfo"); //show info box
@@ -24,7 +32,7 @@ exit_btn.onclick = ()=>{
 continue_btn.onclick = ()=>{
     info_box.classList.remove("activeInfo"); //hide info box
     quiz_box.classList.add("activeQuiz"); //show quiz box
-    showQuetions(0); //calling showQestions function
+    showQuetions(indexRandomQuestion[0]); //calling showQestions function
     queCounter(1); //passing 1 parameter to queCounter
     startTimer(59); //calling startTimer function
     startTimerLine(0); //calling startTimerLine function
@@ -46,11 +54,10 @@ restart_quiz.onclick = ()=>{
     quiz_box.classList.add("activeQuiz"); //show quiz box
     result_box.classList.remove("activeResult"); //hide result box
     timeValue = 59; 
-    que_count = 0;
     que_numb = 1;
     userScore = 0;
     widthValue = 0;
-    showQuetions(que_count); //calling showQestions function
+    showQuetions(indexRandomQuestion[count]); //calling showQestions function
     queCounter(que_numb); //passing que_numb value to queCounter
     clearInterval(counter); //clear counter
     clearInterval(counterLine); //clear counterLine
@@ -67,13 +74,16 @@ quit_quiz.onclick = ()=>{
 
 const next_btn = document.querySelector("footer .next_btn");
 const bottom_ques_counter = document.querySelector("footer .total_que");
-
+let count = 0
+let queCount = 1
 // if Next Que button clicked
 next_btn.onclick = ()=>{
-    if(que_count < questions.length - 1){ //if question count is less than total question length
-        que_count++; //increment the que_count value
+    
+    if(count < questions.length){ //if question count is less than total question length
+        count++; //increment the que_count value
+        queCount++
         que_numb++; //increment the que_numb value
-        showQuetions(que_count); //calling showQestions function
+        showQuetions(indexRandomQuestion[count]); //calling showQestions function
         queCounter(que_numb); //passing que_numb value to queCounter
         clearInterval(counter); //clear counter
         clearInterval(counterLine); //clear counterLine
@@ -85,19 +95,28 @@ next_btn.onclick = ()=>{
         clearInterval(counter); //clear counter
         clearInterval(counterLine); //clear counterLine
         showResult(); //calling showResult function
+        count = 0
+        queCount = 0
     }
 }
 
 // getting questions and options from array
 function showQuetions(index){
     const que_text = document.querySelector(".que_text");
+    let indexRandom = []
+    for(let i=0 ; i<20 ; i++){
+        let number = Math.floor(Math.random() * (5 - 1) + 1)
+        if(!indexRandom.includes(number)){
+            indexRandom.push(number)
+        }
+    }
 
     //creating a new span and div tag for question and option and passing the value using array index
-    let que_tag = '<span>'+ questions[index].nQ + ". " + questions[index].q +'</span>';
-    let option_tag = '<div class="option"><span>'+ questions[index].a1 +'</span></div>'
-    + '<div class="option"><span>'+ questions[index].a2 +'</span></div>'
-    + '<div class="option"><span>'+ questions[index].a3 +'</span></div>'
-    + '<div class="option"><span>'+ questions[index].a4 +'</span></div>';
+    let que_tag = '<span>'+ queCount + ". " + questions[index].q +'</span>';
+    let option_tag = '<div class="option"><span>'+ questions[index][`a${indexRandom[0]}`] +'</span></div>'
+    + '<div class="option"><span>'+ questions[index][`a${indexRandom[1]}`] +'</span></div>'
+    + '<div class="option"><span>'+ questions[index][`a${indexRandom[2]}`] +'</span></div>'
+    + '<div class="option"><span>'+ questions[index][`a${indexRandom[3]}`] +'</span></div>';
     que_text.innerHTML = que_tag; //adding new span tag inside que_tag
     option_list.innerHTML = option_tag; //adding new div tag inside option_tag
     
@@ -117,7 +136,7 @@ function optionSelected(answer){
     clearInterval(counter); //clear counter
     clearInterval(counterLine); //clear counterLine
     let userAns = answer.textContent; //getting user selected option
-    let correcAns = questions[que_count].wrA; //getting correct answer from array
+    let correcAns = questions[indexRandomQuestion[count]].wrA; //getting correct answer from array
     const allOptions = option_list.children.length; //getting all option items
     
     if(userAns == correcAns){ //if user selected option is equal to array's correct answer
@@ -178,7 +197,7 @@ function startTimer(time){
             clearInterval(counter); //clear counter
             timeText.textContent = "Time Off"; //change the time text to time off
             const allOptions = option_list.children.length; //getting all option items
-            let correcAns = questions[que_count].wrA; //getting correct answer from array
+            let correcAns = questions[indexRandomQuestion[count]].wrA; //getting correct answer from array
             for(i=0; i < allOptions; i++){
                 if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer
                     option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
